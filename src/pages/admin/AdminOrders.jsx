@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { createOrder, getOrders, getPatients } from '../../services/labResultsApi.js'
+import { formatPeruDate, formatPeruDateTime } from '../../utils/dateFormat.js'
 
 const states = ['todos', 'pendiente', 'en_proceso', 'publicado']
 
@@ -131,7 +132,10 @@ export default function AdminOrders() {
               {orders.map((order) => (
                 <tr key={order.id}>
                   <td className="px-4 py-4 text-sm font-semibold text-slate-900">{order.pacientes?.nombre}</td>
-                  <td className="px-4 py-4 text-sm text-slate-600">{new Date(order.fecha).toLocaleDateString()}</td>
+                  <td className="px-4 py-4 text-sm text-slate-600">
+                    <p>Orden: {formatPeruDate(order.fecha)}</p>
+                    <p className="text-xs text-slate-500">Emitido: {formatPeruDateTime(order.created_at)}</p>
+                  </td>
                   <td className="px-4 py-4 text-sm"><Badge estado={order.estado} /></td>
                   <td className="px-4 py-4 text-sm text-slate-600">{order.analisis.length} analisis</td>
                   <td className="px-4 py-4 text-right">

@@ -1,5 +1,6 @@
 import { jsPDF } from 'jspdf'
 import QRCode from 'qrcode'
+import { formatPeruDate, formatPeruDateTime } from './dateFormat.js'
 
 const brand = {
   primary: '#05b1ae',
@@ -10,11 +11,6 @@ const brand = {
 
 const logoPath = '/Clinica_Tataje_Logo_A.png'
 const address = 'URB.Santa Rosa del Palmar - Mzn G Lte 26 Calle los zafiros'
-
-function formatDate(date) {
-  if (!date) return 'Sin fecha registrada'
-  return new Date(date).toLocaleDateString()
-}
 
 async function imageToDataUrl(src) {
   const response = await fetch(src)
@@ -144,13 +140,22 @@ export async function generarPDF(orden) {
 
   doc.setFillColor(brand.white)
   doc.setDrawColor(brand.gray)
-  doc.roundedRect(14, 56, 182, 34, 3, 3, 'S')
+  doc.roundedRect(14, 56, 182, 45, 3, 3, 'S')
   drawField(doc, 'Paciente', paciente.nombre, 22, 63, 88)
   drawField(doc, 'DNI', paciente.dni, 120, 63, 38)
-  drawField(doc, 'Fecha', formatDate(orden.fecha), 22, 77, 70)
-  drawField(doc, 'Codigo de validacion', orden.id, 120, 77, 66)
+  drawField(doc, 'Fecha de orden', formatPeruDate(orden.fecha), 22, 77, 70)
+  drawField(doc, 'Emitido', formatPeruDateTime(orden.created_at), 120, 77, 66)
 
-  let y = 106
+  doc.setTextColor(brand.black)
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(8)
+  doc.text('CODIGO DE VALIDACION', 22, 92)
+  doc.setTextColor(brand.primary)
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(8)
+  doc.text(String(orden.id || 'No registrado'), 72, 92, { maxWidth: 112 })
+
+  let y = 116
   const analyses = orden.analisis?.length ? orden.analisis : []
   if (!analyses.length) {
     doc.setTextColor(brand.black)

@@ -67,7 +67,7 @@ export async function getLatestPublishedOrderByDni(dni) {
     .select(publicOrderSelect)
     .eq('pacientes.dni', sanitizeDni(dni))
     .eq('estado', 'publicado')
-    .order('fecha', { ascending: false })
+    .order('created_at', { ascending: false })
     .limit(1)
     .single()
 
@@ -89,7 +89,7 @@ export async function getDashboardData() {
       supabase
         .from(ORDERS_TABLE)
         .select('*, pacientes(*)')
-        .order('fecha', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(8),
     ])
 
@@ -157,7 +157,7 @@ export async function getOrders(status = 'todos') {
   let query = supabase
     .from(ORDERS_TABLE)
     .select(orderSelect)
-    .order('fecha', { ascending: false })
+    .order('created_at', { ascending: false })
 
   if (status !== 'todos') query = query.eq('estado', status)
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getDashboardData } from '../../services/labResultsApi.js'
+import { formatPeruDate, formatPeruDateTime } from '../../utils/dateFormat.js'
 
 function Badge({ estado }) {
   const colors = {
@@ -64,7 +65,10 @@ export default function AdminDashboard() {
                 <tr key={order.id}>
                   <td className="px-5 py-4 text-sm font-semibold text-slate-900">{order.pacientes?.nombre}</td>
                   <td className="px-5 py-4 text-sm text-slate-600">{order.pacientes?.dni}</td>
-                  <td className="px-5 py-4 text-sm text-slate-600">{new Date(order.fecha).toLocaleDateString()}</td>
+                  <td className="px-5 py-4 text-sm text-slate-600">
+                    <p>Orden: {formatPeruDate(order.fecha)}</p>
+                    <p className="text-xs text-slate-500">Emitido: {formatPeruDateTime(order.created_at)}</p>
+                  </td>
                   <td className="px-5 py-4 text-sm"><Badge estado={order.estado} /></td>
                   <td className="px-5 py-4 text-right">
                     <Link to={`/admin/ordenes/${order.id}`} className="text-sm font-semibold text-teal-700 hover:text-teal-800">

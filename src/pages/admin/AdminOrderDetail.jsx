@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { createAnalysis, deleteOrder, getOrderById, updateOrderState } from '../../services/labResultsApi.js'
 import { downloadOrderPdf } from '../../utils/pdfGenerator.js'
+import { formatPeruDate, formatPeruDateTime } from '../../utils/dateFormat.js'
 
 function canMoveTo(order, nextState) {
   if (order.estado === 'publicado' && nextState !== 'publicado') return false
@@ -64,7 +65,8 @@ export default function AdminOrderDetail() {
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">Detalle de orden</p>
           <h1 className="mt-2 text-3xl font-bold text-slate-950">{order.pacientes?.nombre}</h1>
-          <p className="mt-1 text-sm text-slate-600">DNI {order.pacientes?.dni} - {new Date(order.fecha).toLocaleDateString()}</p>
+          <p className="mt-1 text-sm text-slate-600">DNI {order.pacientes?.dni} - Orden {formatPeruDate(order.fecha)}</p>
+          <p className="mt-1 text-sm text-slate-600">Emitido: {formatPeruDateTime(order.created_at)}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {order.estado === 'publicado' ? (

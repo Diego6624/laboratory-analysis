@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { getOrderById } from '../services/labResultsApi.js'
-
-function formatDate(date) {
-  if (!date) return 'Sin fecha'
-  return new Date(date).toLocaleDateString()
-}
+import { formatPeruDate, formatPeruDateTime } from '../utils/dateFormat.js'
 
 export default function ValidateCertificate() {
   const { id: pathId } = useParams()
@@ -68,9 +64,13 @@ export default function ValidateCertificate() {
               </div>
               <div>
                 <dt className="text-xs font-bold uppercase text-slate-500">Fecha de orden</dt>
-                <dd className="mt-1 text-slate-900">{formatDate(orden.fecha)}</dd>
+                <dd className="mt-1 text-slate-900">{formatPeruDate(orden.fecha)}</dd>
               </div>
               <div>
+                <dt className="text-xs font-bold uppercase text-slate-500">Emitido</dt>
+                <dd className="mt-1 text-slate-900">{formatPeruDateTime(orden.created_at)}</dd>
+              </div>
+              <div className="sm:col-span-2">
                 <dt className="text-xs font-bold uppercase text-slate-500">Codigo</dt>
                 <dd className="mt-1 break-all text-slate-900">{orden.id}</dd>
               </div>

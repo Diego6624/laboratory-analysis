@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createOrderPdfBlobUrl, downloadOrderPdf } from '../utils/pdfGenerator.js'
 import { getLatestPublishedOrderByDni } from '../services/labResultsApi.js'
-
-function formatDate(date) {
-  if (!date) return 'Sin fecha'
-  return new Date(date).toLocaleDateString()
-}
+import { formatPeruDate, formatPeruDateTime } from '../utils/dateFormat.js'
 
 function OrderPreview({ orden }) {
   const [pdfUrl, setPdfUrl] = useState('')
@@ -35,7 +31,10 @@ function OrderPreview({ orden }) {
           <p className="text-sm font-semibold text-teal-700">Ultima orden publicada</p>
           <h2 className="text-xl font-bold text-slate-900">{orden.pacientes?.nombre}</h2>
           <p className="text-sm text-slate-600 font-semibold">
-            DNI {orden.pacientes?.dni} · Fecha {formatDate(orden.fecha)}
+            DNI {orden.pacientes?.dni} · Orden {formatPeruDate(orden.fecha)}
+          </p>
+          <p className="mt-1 text-sm text-slate-600">
+            Emitido: {formatPeruDateTime(orden.created_at)}
           </p>
         </div>
         <button
