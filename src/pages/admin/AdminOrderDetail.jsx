@@ -80,7 +80,7 @@ export default function AdminOrderDetail() {
         <h2 className="font-bold text-slate-950">Estado de orden</h2>
         <div className="mt-4 flex flex-wrap gap-2">
           {['pendiente', 'en_proceso', 'publicado'].map((state) => (
-            <button key={state} onClick={() => changeState(state)} className={`rounded-md px-4 py-2 text-sm font-semibold ${order.estado === state ? 'bg-teal-700 text-white' : 'border border-slate-300 text-slate-700'}`}>
+            <button key={state} onClick={() => changeState(state)} className={`uppercase rounded-md px-4 py-2 text-sm font-semibold ${order.estado === state ? 'bg-teal-700 text-white' : 'border border-slate-300 text-slate-700'}`}>
               {state}
             </button>
           ))}

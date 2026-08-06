@@ -20,6 +20,7 @@ export default function AdminOrders() {
   const [patients, setPatients] = useState([])
   const [statusFilter, setStatusFilter] = useState('todos')
   const [patientId, setPatientId] = useState(searchParams.get('paciente_id') || '')
+  const [patientSearch, setPatientSearch] = useState(searchParams.get('paciente_id') ? '' : '')
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
   const [message, setMessage] = useState('')
 
@@ -27,6 +28,19 @@ export default function AdminOrders() {
     () => patients.find((patient) => patient.id === patientId),
     [patientId, patients],
   )
+
+  const patientSearchValue = patientSearch || (selectedPatient ? `${selectedPatient.nombre} - DNI ${selectedPatient.dni}` : '')
+
+  const patientMatches = useMemo(() => {
+    const query = patientSearch.trim().toLowerCase()
+    if (!query) return []
+
+    return patients
+      .filter((patient) =>
+        [patient.nombre, patient.dni].some((value) => String(value ?? '').toLowerCase().includes(query)),
+      )
+      .slice(0, 8)
+  }, [patientSearch, patients])
 
   useEffect(() => {
     let active = true
@@ -70,14 +84,40 @@ export default function AdminOrders() {
       <form onSubmit={submit} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <h2 className="font-bold text-slate-950">Crear orden</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-[1fr_220px_auto]">
-          <select value={patientId} onChange={(e) => setPatientId(e.target.value)} className="h-11 rounded-md border border-slate-300 px-3" required>
-            <option value="">Seleccionar paciente</option>
-            {patients.map((patient) => (
-              <option key={patient.id} value={patient.id}>
-                {patient.nombre} - DNI {patient.dni}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <input
+              value={patientSearchValue}
+              onChange={(event) => {
+                setPatientSearch(event.target.value)
+                setPatientId('')
+              }}
+              placeholder="Buscar paciente por DNI o nombre"
+              className="h-11 w-full rounded-md border border-slate-300 px-3 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-100"
+              required
+            />
+            {patientSearch && !patientId ? (
+              <div className="absolute z-20 mt-2 max-h-72 w-full overflow-auto rounded-md border border-slate-200 bg-white shadow-lg">
+                {patientMatches.length ? (
+                  patientMatches.map((patient) => (
+                    <button
+                      key={patient.id}
+                      type="button"
+                      onClick={() => {
+                        setPatientId(patient.id)
+                        setPatientSearch(`${patient.nombre} - DNI ${patient.dni}`)
+                      }}
+                      className="block w-full px-4 py-3 text-left text-sm hover:bg-slate-50"
+                    >
+                      <span className="font-semibold text-slate-950">{patient.nombre}</span>
+                      <span className="ml-2 text-slate-500">DNI {patient.dni}</span>
+                    </button>
+                  ))
+                ) : (
+                  <p className="px-4 py-3 text-sm text-slate-500">No se encontraron pacientes.</p>
+                )}
+              </div>
+            ) : null}
+          </div>
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-11 rounded-md border border-slate-300 px-3" required />
           <button className="h-11 rounded-md bg-teal-700 px-5 text-sm font-semibold text-white">Crear orden</button>
         </div>
