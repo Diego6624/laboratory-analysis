@@ -34,7 +34,7 @@ function OrderPreview({ orden }) {
         <div>
           <p className="text-sm font-semibold text-teal-700">Ultima orden publicada</p>
           <h2 className="text-xl font-bold text-slate-900">{orden.pacientes?.nombre}</h2>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-600 font-semibold">
             DNI {orden.pacientes?.dni} · Fecha {formatDate(orden.fecha)}
           </p>
         </div>

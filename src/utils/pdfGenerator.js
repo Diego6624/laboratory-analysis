@@ -2,36 +2,72 @@ import { jsPDF } from 'jspdf'
 import QRCode from 'qrcode'
 
 const brand = {
-  navy: '#16324f',
-  teal: '#0f766e',
-  ink: '#1f2937',
-  muted: '#64748b',
-  line: '#d7dee8',
-  soft: '#eef7f6',
+  primary: '#05b1ae',
+  gray: '#b3b3b3',
+  black: '#373737',
+  white: '#ffffff',
 }
+
+const logoPath = '/Clinica_Tataje_Logo_A.png'
+const address = 'URB.Santa Rosa del Palmar - Mzn G Lte 26 Calle los zafiros'
 
 function formatDate(date) {
   if (!date) return 'Sin fecha registrada'
   return new Date(date).toLocaleDateString()
 }
 
-function drawHeader(doc) {
-  doc.setFillColor(brand.navy)
-  doc.rect(0, 0, 210, 38, 'F')
-  doc.setTextColor('#ffffff')
+async function imageToDataUrl(src) {
+  const response = await fetch(src)
+  const blob = await response.blob()
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
+}
+
+async function drawHeader(doc) {
+  let logoDataUrl
+
+  try {
+    logoDataUrl = await imageToDataUrl(logoPath)
+  } catch {
+    logoDataUrl = null
+  }
+
+  doc.setFillColor(brand.white)
+  doc.rect(0, 0, 210, 48, 'F')
+  doc.setFillColor(brand.primary)
+  doc.rect(0, 0, 210, 6, 'F')
+
+  if (logoDataUrl) {
+    doc.addImage(logoDataUrl, 'PNG', 14, 11, 34, 24)
+  }
+
+  doc.setTextColor(brand.primary)
   doc.setFont('helvetica', 'bold')
-  doc.setFontSize(16)
-  doc.text('LABORATORIO CLINICO - POLICLINICO PALOMINO', 14, 15)
+  doc.setFontSize(15)
+  doc.text('LABORATORIO CLINICO - POLICLINICO PALOMINO', 54, 17)
+  doc.setTextColor(brand.black)
   doc.setFontSize(11)
-  doc.text('RESULTADO DE ANALISIS CLINICOS', 14, 26)
+  doc.text('RESULTADO DE ANALISIS CLINICOS', 54, 26)
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(8)
+  doc.text(address, 54, 34, { maxWidth: 132 })
+
+  doc.setDrawColor(brand.gray)
+  doc.setLineWidth(0.3)
+  doc.line(14, 44, 196, 44)
 }
 
 function drawField(doc, label, value, x, y, width = 70) {
-  doc.setTextColor(brand.muted)
+  doc.setTextColor(brand.black)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(8)
   doc.text(label.toUpperCase(), x, y)
-  doc.setTextColor(brand.ink)
+  doc.setTextColor(brand.primary)
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(11)
   doc.text(String(value || 'No registrado'), x, y + 7, { maxWidth: width })
@@ -45,16 +81,16 @@ function ensurePageSpace(doc, y, needed = 24) {
 
 function drawResultTable(doc, analysis, y) {
   y = ensurePageSpace(doc, y, 28)
-  doc.setTextColor(brand.navy)
+  doc.setTextColor(brand.primary)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(12)
   doc.text(analysis.tipo || 'Analisis sin nombre', 14, y)
   y += 7
 
-  doc.setFillColor('#f8fafc')
-  doc.setDrawColor(brand.line)
+  doc.setFillColor(brand.primary)
+  doc.setDrawColor(brand.primary)
   doc.roundedRect(14, y, 182, 10, 2, 2, 'FD')
-  doc.setTextColor(brand.muted)
+  doc.setTextColor(brand.white)
   doc.setFontSize(8)
   doc.text('PARAMETRO', 18, y + 7)
   doc.text('RESULTADO', 72, y + 7)
@@ -75,10 +111,10 @@ function drawResultTable(doc, analysis, y) {
     )
 
     y = ensurePageSpace(doc, y, rowHeight)
-    doc.setDrawColor(brand.line)
+    doc.setDrawColor(brand.gray)
     doc.line(14, y, 196, y)
     doc.setFont('helvetica', 'normal')
-    doc.setTextColor(brand.ink)
+    doc.setTextColor(brand.black)
     doc.setFontSize(9)
     doc.text(parameterLines, 18, y + 7)
     doc.text(valueLines, 72, y + 7)
@@ -99,24 +135,25 @@ export async function generarPDF(orden) {
     margin: 1,
     width: 180,
     color: {
-      dark: brand.navy,
-      light: '#ffffff',
+      dark: brand.primary,
+      light: brand.white,
     },
   })
 
-  drawHeader(doc)
+  await drawHeader(doc)
 
-  doc.setFillColor(brand.soft)
-  doc.roundedRect(14, 48, 182, 34, 3, 3, 'F')
-  drawField(doc, 'Paciente', paciente.nombre, 22, 59, 88)
-  drawField(doc, 'DNI', paciente.dni, 120, 59, 38)
-  drawField(doc, 'Fecha', formatDate(orden.fecha), 22, 74, 70)
-  drawField(doc, 'Codigo de validacion', orden.id, 120, 74, 66)
+  doc.setFillColor(brand.white)
+  doc.setDrawColor(brand.gray)
+  doc.roundedRect(14, 56, 182, 34, 3, 3, 'S')
+  drawField(doc, 'Paciente', paciente.nombre, 22, 63, 88)
+  drawField(doc, 'DNI', paciente.dni, 120, 63, 38)
+  drawField(doc, 'Fecha', formatDate(orden.fecha), 22, 77, 70)
+  drawField(doc, 'Codigo de validacion', orden.id, 120, 77, 66)
 
-  let y = 98
+  let y = 106
   const analyses = orden.analisis?.length ? orden.analisis : []
   if (!analyses.length) {
-    doc.setTextColor(brand.muted)
+    doc.setTextColor(brand.black)
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(10)
     doc.text('Esta orden no tiene analisis registrados.', 14, y)
@@ -128,23 +165,24 @@ export async function generarPDF(orden) {
   }
 
   y = ensurePageSpace(doc, y, 50)
+  doc.setDrawColor(brand.gray)
   doc.roundedRect(14, y, 182, 46, 3, 3, 'S')
   doc.addImage(qrDataUrl, 'PNG', 22, y + 8, 28, 28)
-  doc.setTextColor(brand.navy)
+  doc.setTextColor(brand.primary)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(10)
   doc.text('Documento generado automaticamente', 58, y + 14)
-  doc.setTextColor(brand.muted)
+  doc.setTextColor(brand.black)
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(8)
   doc.text(`Codigo de validacion: ${orden.id}`, 58, y + 24, { maxWidth: 126 })
   doc.text(validationUrl, 58, y + 34, { maxWidth: 126 })
 
-  doc.setFillColor(brand.navy)
+  doc.setFillColor(brand.primary)
   doc.rect(0, 282, 210, 15, 'F')
-  doc.setTextColor('#ffffff')
+  doc.setTextColor(brand.white)
   doc.setFontSize(8)
-  doc.text('Policlinico Palomino - Verifique la autenticidad escaneando el codigo QR.', 16, 291)
+  doc.text(`${address} - Verifique la autenticidad escaneando el codigo QR.`, 16, 291)
 
   return doc
 }

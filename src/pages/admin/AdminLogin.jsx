@@ -5,7 +5,7 @@ import { loginAdmin } from '../../services/labResultsApi.js'
 export default function AdminLogin() {
   const navigate = useNavigate()
   const location = useLocation()
-  const [form, setForm] = useState({ email: 'admin@lab.com', password: '' })
+  const [form, setForm] = useState({ email: '', password: '' })
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState('')
 
@@ -39,6 +39,7 @@ export default function AdminLogin() {
               value={form.email}
               onChange={(event) => setForm({ ...form, email: event.target.value })}
               className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-100"
+              placeholder='correo@gmail.com'
             />
           </label>
           <label className="block">
@@ -48,6 +49,7 @@ export default function AdminLogin() {
               value={form.password}
               onChange={(event) => setForm({ ...form, password: event.target.value })}
               className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-100"
+              placeholder='********'
             />
           </label>
 
