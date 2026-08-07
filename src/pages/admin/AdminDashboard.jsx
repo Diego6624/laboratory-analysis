@@ -60,6 +60,15 @@ export default function AdminDashboard() {
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200">
+            <thead className="bg-slate-50">
+              <tr>
+                <th className="px-5 py-3 text-left text-xs font-bold uppercase text-slate-500">Paciente</th>
+                <th className="px-5 py-3 text-left text-xs font-bold uppercase text-slate-500">DNI</th>
+                <th className="px-5 py-3 text-left text-xs font-bold uppercase text-slate-500">Fechas</th>
+                <th className="px-5 py-3 text-left text-xs font-bold uppercase text-slate-500">Estado</th>
+                <th className="px-5 py-3 text-right text-xs font-bold uppercase text-slate-500">Acciones</th>
+              </tr>
+            </thead>
             <tbody className="divide-y divide-slate-100">
               {data.recentOrders.map((order) => (
                 <tr key={order.id}>

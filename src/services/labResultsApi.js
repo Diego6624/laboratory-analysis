@@ -45,6 +45,18 @@ function normalizeOrder(order) {
   }
 }
 
+function getPeruDate() {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'America/Lima',
+  }).formatToParts(new Date())
+
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]))
+  return `${values.year}-${values.month}-${values.day}`
+}
+
 export async function loginAdmin(email, password) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
   throwIfError(error)
@@ -173,9 +185,10 @@ export async function createOrder(payload) {
 }
 
 export async function updateOrderState(orderId, estado) {
+  const payload = estado === 'publicado' ? { estado, fecha_reporte: getPeruDate() } : { estado }
   const { data, error } = await supabase
     .from(ORDERS_TABLE)
-    .update({ estado })
+    .update(payload)
     .eq('id', orderId)
     .select()
     .single()
@@ -188,10 +201,10 @@ export async function deleteOrder(orderId) {
   throwIfError(error)
 }
 
-export async function createAnalysis(orderId, tipo) {
+export async function createAnalysis(orderId, payload) {
   const { data, error } = await supabase
     .from(ANALYSES_TABLE)
-    .insert({ orden_id: orderId, tipo, estado: 'pendiente' })
+    .insert({ ...payload, orden_id: orderId, estado: 'pendiente' })
     .select()
     .single()
   throwIfError(error)

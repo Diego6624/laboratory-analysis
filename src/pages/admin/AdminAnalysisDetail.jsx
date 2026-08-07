@@ -8,8 +8,18 @@ import {
   updateAnalysisState,
   updateResult,
 } from '../../services/labResultsApi.js'
+import { ANALYSIS_PARAMETERS, BACILOSCOPY_TYPE } from '../../config/labOptions.js'
 
-const emptyForm = { parametro: '', valor: '', unidad: '', referencia: '' }
+const emptyForm = { parametro: '', valor: '', referencia: '' }
+
+function Field({ label, children }) {
+  return (
+    <label className="block">
+      <span className="text-sm font-semibold text-slate-700">{label}</span>
+      <div className="mt-2">{children}</div>
+    </label>
+  )
+}
 
 export default function AdminAnalysisDetail() {
   const { id, analisis_id: analysisId } = useParams()
@@ -53,7 +63,6 @@ export default function AdminAnalysisDetail() {
     const payload = {
       parametro: form.parametro.trim(),
       valor: form.valor.trim() || null,
-      unidad: form.unidad.trim() || null,
       referencia: form.referencia.trim() || null,
     }
 
@@ -115,6 +124,10 @@ export default function AdminAnalysisDetail() {
           <p className="mt-1 text-sm text-slate-600">
             {analysis.ordenes?.pacientes?.nombre} - DNI {analysis.ordenes?.pacientes?.dni}
           </p>
+          {analysis.tipo === BACILOSCOPY_TYPE && analysis.aspecto_macroscopico ? (
+            <p className="mt-1 text-sm text-slate-600">Aspecto macroscópico: {analysis.aspecto_macroscopico}</p>
+          ) : null}
+          {analysis.observaciones ? <p className="mt-1 text-sm text-slate-600">Obs: {analysis.observaciones}</p> : null}
         </div>
         <div className="flex flex-wrap gap-2">
           <button onClick={markCompleted} className="h-10 rounded-md bg-teal-700 px-4 text-sm font-semibold text-white">Marcar completado</button>
@@ -126,11 +139,30 @@ export default function AdminAnalysisDetail() {
 
       <form onSubmit={submit} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <h2 className="font-bold text-slate-950">{editingId ? 'Editar resultado' : 'Agregar resultado'}</h2>
-        <div className="mt-4 grid gap-4 md:grid-cols-4">
-          <input value={form.parametro} onChange={(e) => setForm({ ...form, parametro: e.target.value })} placeholder="Parametro" className="h-11 rounded-md border border-slate-300 px-3" required />
-          <input value={form.valor} onChange={(e) => setForm({ ...form, valor: e.target.value })} placeholder="Valor" className="h-11 rounded-md border border-slate-300 px-3" />
-          <input value={form.unidad} onChange={(e) => setForm({ ...form, unidad: e.target.value })} placeholder="Unidad" className="h-11 rounded-md border border-slate-300 px-3" />
-          <input value={form.referencia} onChange={(e) => setForm({ ...form, referencia: e.target.value })} placeholder="Referencia" className="h-11 rounded-md border border-slate-300 px-3" />
+        {!editingId && ANALYSIS_PARAMETERS[analysis.tipo]?.length ? (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {ANALYSIS_PARAMETERS[analysis.tipo].map((parameter) => (
+              <button
+                key={parameter}
+                type="button"
+                onClick={() => setForm({ ...form, parametro: parameter })}
+                className="rounded-md border border-teal-200 px-3 py-2 text-xs font-semibold text-teal-700 hover:bg-teal-50"
+              >
+                {parameter}
+              </button>
+            ))}
+          </div>
+        ) : null}
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
+          <Field label="Parámetro">
+            <input value={form.parametro} onChange={(e) => setForm({ ...form, parametro: e.target.value })} placeholder="Parametro" className="h-11 w-full rounded-md border border-slate-300 px-3" required />
+          </Field>
+          <Field label="Valor">
+            <input value={form.valor} onChange={(e) => setForm({ ...form, valor: e.target.value })} placeholder="Valor" className="h-11 w-full rounded-md border border-slate-300 px-3" />
+          </Field>
+          <Field label="Referencia">
+            <input value={form.referencia} onChange={(e) => setForm({ ...form, referencia: e.target.value })} placeholder="Referencia" className="h-11 w-full rounded-md border border-slate-300 px-3" />
+          </Field>
         </div>
         <div className="mt-4 flex gap-2">
           <button className="h-11 rounded-md bg-slate-950 px-5 text-sm font-semibold text-white">{editingId ? 'Actualizar' : 'Agregar'}</button>
@@ -146,20 +178,25 @@ export default function AdminAnalysisDetail() {
             <tr>
               <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Parametro</th>
               <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Valor</th>
-              <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Unidad</th>
               <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Referencia</th>
               <th className="px-4 py-3 text-right text-xs font-bold uppercase text-slate-500">Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {analysis.resultados.length === 0 ? (
+              <tr>
+                <td colSpan="4" className="px-4 py-8 text-center text-sm text-slate-500">
+                  No hay resultados registrados para este análisis.
+                </td>
+              </tr>
+            ) : null}
             {analysis.resultados.map((result) => (
               <tr key={result.id}>
                 <td className="px-4 py-4 text-sm font-semibold">{result.parametro}</td>
                 <td className="px-4 py-4 text-sm text-slate-600">{result.valor || 'Pendiente'}</td>
-                <td className="px-4 py-4 text-sm text-slate-600">{result.unidad || '-'}</td>
                 <td className="px-4 py-4 text-sm text-slate-600">{result.referencia || '-'}</td>
                 <td className="px-4 py-4 text-right">
-                  <button onClick={() => { setEditingId(result.id); setForm(result) }} className="mr-2 rounded-md border px-3 py-2 text-sm font-semibold">Editar</button>
+                  <button onClick={() => { setEditingId(result.id); setForm({ parametro: result.parametro || '', valor: result.valor || '', referencia: result.referencia || '' }) }} className="mr-2 rounded-md border px-3 py-2 text-sm font-semibold">Editar</button>
                   <button onClick={() => removeResult(result.id)} className="rounded-md border border-red-200 px-3 py-2 text-sm font-semibold text-red-700">Eliminar</button>
                 </td>
               </tr>

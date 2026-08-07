@@ -88,7 +88,6 @@ export default function ValidateCertificate() {
                         <tr>
                           <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Parametro</th>
                           <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Resultado</th>
-                          <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Unidad</th>
                           <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Referencia</th>
                         </tr>
                       </thead>
@@ -99,7 +98,6 @@ export default function ValidateCertificate() {
                               {row.parametro || 'Resultado'}
                             </td>
                             <td className="px-4 py-3 text-sm text-slate-600">{row.valor || 'Pendiente'}</td>
-                            <td className="px-4 py-3 text-sm text-slate-600">{row.unidad || '-'}</td>
                             <td className="px-4 py-3 text-sm text-slate-600">{row.referencia || '-'}</td>
                           </tr>
                         ))}

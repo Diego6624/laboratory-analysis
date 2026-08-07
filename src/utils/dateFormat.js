@@ -1,6 +1,11 @@
 export function formatPeruDate(date) {
   if (!date) return 'Sin fecha'
 
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    const [year, month, day] = date.split('-')
+    return `${day}/${month}/${year}`
+  }
+
   return new Intl.DateTimeFormat('es-PE', {
     day: '2-digit',
     month: '2-digit',
