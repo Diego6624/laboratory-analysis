@@ -149,7 +149,7 @@ export default function AdminOrders() {
               ) : null}
             </div>
           </Field>
-          <Field label="Fecha de orden">
+          <Field label="Fecha de reporte">
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-11 w-full rounded-md border border-slate-300 px-3" required />
           </Field>
           <div className="flex items-end">
