@@ -151,12 +151,8 @@ export default function PublicSearch() {
           <div className="flex flex-col items-center text-center">
 
             {/* Logo */}
-            <div className="mb-8 flex items-center gap-3">
-              <img src="/logo.png" alt="Policlínico Palomino" className="h-14 w-auto" />
-              <div className="text-left">
-                <p className="text-md font-semibold uppercase tracking-widest text-slate-400">Laboratorio Clínico</p>
-                <p className="text-xl font-bold text-slate-900 tracking-widest uppercase">Policlínico Palomino</p>
-              </div>
+            <div className="mb-10">
+              <img src="/logoNombreT.png" alt="Policlínico Palomino" className="h-20 w-auto" />
             </div>
 
             <h1 className="text-4xl font-bold text-slate-950 sm:text-5xl leading-tight">
