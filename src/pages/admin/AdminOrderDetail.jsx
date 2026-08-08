@@ -16,7 +16,12 @@ function Field({ label, children, className = '' }) {
 
 function canMoveTo(order, nextState) {
   if (order.estado === 'publicado' && nextState !== 'publicado') return false
-  if (nextState === 'publicado') return order.analisis.length > 0 && order.analisis.every((item) => item.estado === 'completado')
+  if (nextState === 'publicado') {
+    if (order.analisis.length === 0) return false
+    const todosCompletados = order.analisis.every((item) => item.estado === 'completado')
+    const todosConResultados = order.analisis.every((item) => (item.resultados?.length || 0) > 0)
+    return todosCompletados && todosConResultados
+  }
   return true
 }
 
@@ -62,7 +67,23 @@ export default function AdminOrderDetail() {
 
   async function changeState(nextState) {
     if (!canMoveTo(order, nextState)) {
-      setMessage('Solo se puede publicar si todos los analisis estan completados; una orden publicada no vuelve a pendiente.')
+      if (order.estado === 'publicado') {
+        setMessage('Una orden publicada no puede volver a un estado anterior.')
+        return
+      }
+      if (nextState === 'publicado') {
+        const sinCompletar = order.analisis.filter((a) => a.estado !== 'completado')
+        const sinResultados = order.analisis.filter((a) => (a.resultados?.length || 0) === 0)
+        if (sinResultados.length > 0) {
+          setMessage(`Los siguientes análisis no tienen resultados: ${sinResultados.map((a) => a.tipo).join(', ')}. Agréguele al menos un resultado o elimínelo(s).`)
+          return
+        }
+        if (sinCompletar.length > 0) {
+          setMessage(`Los siguientes análisis aún están pendientes: ${sinCompletar.map((a) => a.tipo).join(', ')}. Márcalos como completados antes de publicar.`)
+          return
+        }
+      }
+      setMessage('No se puede realizar ese cambio de estado.')
       return
     }
     await updateOrderState(order.id, nextState)
@@ -82,7 +103,7 @@ export default function AdminOrderDetail() {
     <div className="space-y-6">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">Detalle de orden</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#F26522]">Detalle de orden</p>
           <h1 className="mt-2 text-3xl font-bold text-slate-950">{order.pacientes?.nombre}</h1>
           <p className="mt-1 text-sm text-slate-600">DNI {order.pacientes?.dni} - Orden {formatPeruDate(order.fecha)}</p>
           <p className="mt-1 text-sm text-slate-600">Emitido: {formatPeruDateTime(order.created_at)}</p>
@@ -90,9 +111,9 @@ export default function AdminOrderDetail() {
         </div>
         <div className="flex flex-wrap gap-2">
           {order.estado === 'publicado' ? (
-            <button onClick={() => downloadOrderPdf(order)} className="h-10 rounded-md bg-teal-700 px-4 text-sm font-semibold text-white">Generar PDF</button>
+            <button onClick={() => downloadOrderPdf(order)} className="h-10 rounded-md border hover:bg-slate-50 px-4 text-sm font-semibold cursor-pointer" style={{ borderColor: '#35318240', color: '#353182' }}>Generar PDF</button>
           ) : null}
-          <button onClick={removeOrder} className="h-10 rounded-md border border-red-200 px-4 text-sm font-semibold text-red-700">Eliminar orden</button>
+          <button onClick={removeOrder} className="h-10 rounded-md border border-red-200 px-4 text-sm font-semibold text-red-700 hover:bg-red-50 cursor-pointer">Eliminar orden</button>
         </div>
       </header>
 
@@ -109,7 +130,7 @@ export default function AdminOrderDetail() {
         <h2 className="font-bold text-slate-950">Estado de orden</h2>
         <div className="mt-4 flex flex-wrap gap-2">
           {['pendiente', 'en_proceso', 'publicado'].map((state) => (
-            <button key={state} onClick={() => changeState(state)} className={`uppercase rounded-md px-4 py-2 text-sm font-semibold ${order.estado === state ? 'bg-teal-700 text-white' : 'border border-slate-300 text-slate-700'}`}>
+            <button key={state} onClick={() => changeState(state)} className={`cursor-pointer uppercase rounded-md px-4 py-2 text-sm font-semibold ${order.estado === state ? 'bg-[#353182] text-white' : 'border border-slate-300 text-slate-700'}`}>
               {state}
             </button>
           ))}
@@ -134,7 +155,7 @@ export default function AdminOrderDetail() {
           <Field label="Observaciones del análisis" className="md:col-span-2">
             <textarea value={newAnalysis.observaciones} onChange={(e) => setNewAnalysis({ ...newAnalysis, observaciones: e.target.value })} placeholder="Observaciones del analisis" className="w-full rounded-md border border-slate-300 px-3 py-3" rows={3} />
           </Field>
-          <button className="h-11 rounded-md bg-slate-950 px-5 text-sm font-semibold text-white">Agregar</button>
+          <button className="h-11 rounded-md bg-slate-950 px-5 text-sm font-semibold text-white cursor-pointer">Agregar</button>
         </div>
       </form>
 
@@ -163,7 +184,12 @@ export default function AdminOrderDetail() {
                   </td>
                   <td className="px-5 py-4 text-sm text-slate-600">{analysis.resultados?.length || 0}</td>
                   <td className="px-5 py-4 text-sm">
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase text-slate-700">{analysis.estado}</span>
+                    <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase ${analysis.estado === 'completado'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-amber-100 text-amber-700'
+                      }`}>
+                      {analysis.estado}
+                    </span>
                   </td>
                   <td className="px-5 py-4 text-right">
                     <Link to={`/admin/ordenes/${order.id}/analisis/${analysis.id}`} className="text-sm font-semibold text-teal-700 hover:text-teal-800">

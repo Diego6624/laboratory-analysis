@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createPatient, deletePatient, getPatientByDni, getPatients, updatePatient } from '../../services/labResultsApi.js'
+import { ClipboardList, Pencil, Trash2 } from 'lucide-react'
 
 const emptyForm = { dni: '', nombre: '', telefono: '', fecha_nacimiento: '', sexo: '' }
 
@@ -91,8 +92,8 @@ export default function AdminPatients() {
     <div className="space-y-6">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">Administracion</p>
-          <h1 className="mt-2 text-3xl font-bold text-slate-950">Pacientes</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#F26522]">Administracion</p>
+          <h1 className="mt-2 text-3xl font-bold text-[#353182]">Pacientes</h1>
         </div>
         <input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Buscar por nombre o DNI" className="h-11 rounded-md border border-slate-300 bg-white px-3 sm:w-80" />
       </header>
@@ -122,15 +123,15 @@ export default function AdminPatients() {
             </select>
           </Field>
         </div>
-        <button className="mt-4 h-11 rounded-md bg-teal-700 px-5 text-sm font-semibold text-white">{editingId ? 'Actualizar' : 'Guardar'}</button>
+        <button className="mt-4 h-11 rounded-md bg-[#353182] cursor-pointer px-5 text-sm font-semibold text-white ">{editingId ? 'Actualizar' : 'Guardar'}</button>
       </form>
 
       <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
         <table className="min-w-full divide-y divide-slate-200">
           <thead className="bg-slate-50">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Nombre</th>
               <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">DNI</th>
+              <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Nombre</th>
               <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Teléfono</th>
               <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">F. nacimiento</th>
               <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Sexo</th>
@@ -140,15 +141,37 @@ export default function AdminPatients() {
           <tbody className="divide-y divide-slate-100">
             {filtered.map((patient) => (
               <tr key={patient.id}>
-                <td className="px-4 py-4 text-sm font-semibold">{patient.nombre}</td>
-                <td className="px-4 py-4 text-sm text-slate-600">{patient.dni}</td>
+                <td className="px-4 py-4 text-sm font-semibold text-slate-600">{patient.dni}</td>
+                <td className="px-4 py-4 text-sm">{patient.nombre}</td>
                 <td className="px-4 py-4 text-sm text-slate-600">{patient.telefono || '-'}</td>
                 <td className="px-4 py-4 text-sm text-slate-600">{patient.fecha_nacimiento || '-'}</td>
                 <td className="px-4 py-4 text-sm text-slate-600">{patient.sexo || '-'}</td>
-                <td className="px-4 py-4 text-right">
-                  <button onClick={() => navigate(`/admin/ordenes?paciente_id=${patient.id}`)} className="mr-2 rounded-md border px-3 py-2 text-sm font-semibold">Nueva orden</button>
-                  <button onClick={() => editPatient(patient)} className="mr-2 rounded-md border px-3 py-2 text-sm font-semibold">Editar</button>
-                  <button onClick={() => remove(patient.id)} className="rounded-md border border-red-200 px-3 py-2 text-sm font-semibold text-red-700">Eliminar</button>
+                <td className="px-4 py-4 text-right gap-2 flex justify-end">
+                  <button
+                    onClick={() => navigate(`/admin/ordenes?paciente_id=${patient.id}`)}
+                    className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold text-white transition"
+                    style={{ background: 'linear-gradient(135deg, #353182, #4a47a3)' }}
+                  >
+                    <ClipboardList size={13} />
+                    Nueva orden
+                  </button>
+
+                  <button
+                    onClick={() => editPatient(patient)}
+                    className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-semibold transition hover:bg-slate-50"
+                    style={{ borderColor: '#35318240', color: '#353182' }}
+                  >
+                    <Pencil size={13} />
+                    Editar
+                  </button>
+
+                  <button
+                    onClick={() => remove(patient.id)}
+                    className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border border-red-200 px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                  >
+                    <Trash2 size={13} />
+                    Eliminar
+                  </button>
                 </td>
               </tr>
             ))}

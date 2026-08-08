@@ -98,8 +98,8 @@ export default function AdminOrders() {
     <div className="space-y-6">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">Laboratorio</p>
-          <h1 className="mt-2 text-3xl font-bold text-slate-950">Ordenes</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#F26522]">Laboratorio</p>
+          <h1 className="mt-2 text-3xl font-bold text-[#353182]">Ordenes</h1>
         </div>
         <Field label="Filtrar por estado">
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="h-11 rounded-md border border-slate-300 bg-white px-3 uppercase sm:w-56">
@@ -152,8 +152,8 @@ export default function AdminOrders() {
           <Field label="Fecha de reporte">
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-11 w-full rounded-md border border-slate-300 px-3" required />
           </Field>
-          <div className="flex items-end">
-            <button className="h-11 w-full rounded-md bg-teal-700 px-5 text-sm font-semibold text-white">Crear orden</button>
+          <div className="hidden md:flex items-end">
+            <button className="h-11 w-full rounded-md bg-[#353182] px-5 text-sm font-semibold text-white cursor-pointer">Crear orden</button>
           </div>
         </div>
 
@@ -179,6 +179,9 @@ export default function AdminOrders() {
           <Field label="Observaciones generales" className="md:col-span-3">
             <textarea value={orderMeta.observaciones} onChange={(e) => setOrderMeta({ ...orderMeta, observaciones: e.target.value })} className="w-full rounded-md border border-slate-300 px-3 py-3" rows={3} />
           </Field>
+          <div className="md:hidden flex items-end">
+            <button className="h-11 w-full rounded-md bg-[#353182] px-5 text-sm font-semibold text-white cursor-pointer">Crear orden</button>
+          </div>
         </div>
         {selectedPatient ? <p className="mt-3 text-sm text-slate-600">Paciente seleccionado: {selectedPatient.nombre}</p> : null}
       </form>

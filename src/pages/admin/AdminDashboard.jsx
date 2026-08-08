@@ -41,8 +41,8 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <header>
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">Panel</p>
-        <h1 className="mt-2 text-3xl font-bold text-slate-950">Dashboard</h1>
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#F26522]">Panel</p>
+        <h1 className="mt-2 text-3xl font-bold text-[#353182]">Dashboard</h1>
       </header>
 
       <section className="grid gap-4 md:grid-cols-4">

@@ -119,8 +119,8 @@ export default function AdminAnalysisDetail() {
     <div className="space-y-6">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <Link to={`/admin/ordenes/${id}`} className="text-sm font-semibold text-teal-700">Volver a la orden</Link>
-          <h1 className="mt-2 text-3xl font-bold text-slate-950">{analysis.tipo}</h1>
+          <Link to={`/admin/ordenes/${id}`} className="text-sm font-semibold text-[#F26522]">Volver a la orden</Link>
+          <h1 className="mt-2 text-3xl font-bold text-[#353182]">{analysis.tipo}</h1>
           <p className="mt-1 text-sm text-slate-600">
             {analysis.ordenes?.pacientes?.nombre} - DNI {analysis.ordenes?.pacientes?.dni}
           </p>
@@ -130,8 +130,8 @@ export default function AdminAnalysisDetail() {
           {analysis.observaciones ? <p className="mt-1 text-sm text-slate-600">Obs: {analysis.observaciones}</p> : null}
         </div>
         <div className="flex flex-wrap gap-2">
-          <button onClick={markCompleted} className="h-10 rounded-md bg-teal-700 px-4 text-sm font-semibold text-white">Marcar completado</button>
-          <button onClick={removeAnalysis} className="h-10 rounded-md border border-red-200 px-4 text-sm font-semibold text-red-700">Eliminar analisis</button>
+          <button onClick={markCompleted} className="h-10 rounded-md bg-[#353182] px-4 text-sm font-semibold text-white cursor-pointer">Marcar completado</button>
+          <button onClick={removeAnalysis} className="h-10 rounded-md border border-red-200 hover:bg-red-50 px-4 text-sm font-semibold text-red-700 cursor-pointer">Eliminar analisis</button>
         </div>
       </header>
 
@@ -146,7 +146,8 @@ export default function AdminAnalysisDetail() {
                 key={parameter}
                 type="button"
                 onClick={() => setForm({ ...form, parametro: parameter })}
-                className="rounded-md border border-teal-200 px-3 py-2 text-xs font-semibold text-teal-700 hover:bg-teal-50"
+                className="rounded-md border hover:bg-slate-50 px-3 py-2 text-xs font-semibold cursor-pointer"
+                style={{ borderColor: '#35318240', color: '#353182' }}
               >
                 {parameter}
               </button>
@@ -165,7 +166,7 @@ export default function AdminAnalysisDetail() {
           </Field>
         </div>
         <div className="mt-4 flex gap-2">
-          <button className="h-11 rounded-md bg-slate-950 px-5 text-sm font-semibold text-white">{editingId ? 'Actualizar' : 'Agregar'}</button>
+          <button className="h-11 rounded-md bg-[#353182] px-5 text-sm font-semibold text-white cursor-pointer">{editingId ? 'Actualizar' : 'Agregar'}</button>
           {editingId ? (
             <button type="button" onClick={() => { setEditingId(null); setForm(emptyForm) }} className="h-11 rounded-md border border-slate-300 px-5 text-sm font-semibold">Cancelar</button>
           ) : null}
@@ -196,8 +197,8 @@ export default function AdminAnalysisDetail() {
                 <td className="px-4 py-4 text-sm text-slate-600">{result.valor || 'Pendiente'}</td>
                 <td className="px-4 py-4 text-sm text-slate-600">{result.referencia || '-'}</td>
                 <td className="px-4 py-4 text-right">
-                  <button onClick={() => { setEditingId(result.id); setForm({ parametro: result.parametro || '', valor: result.valor || '', referencia: result.referencia || '' }) }} className="mr-2 rounded-md border px-3 py-2 text-sm font-semibold">Editar</button>
-                  <button onClick={() => removeResult(result.id)} className="rounded-md border border-red-200 px-3 py-2 text-sm font-semibold text-red-700">Eliminar</button>
+                  <button onClick={() => { setEditingId(result.id); setForm({ parametro: result.parametro || '', valor: result.valor || '', referencia: result.referencia || '' }) }} className="cursor-pointer mr-2 rounded-md border px-3 py-2 text-sm font-semibold hover:bg-slate-50" style={{ borderColor: '#35318240', color: '#353182' }}>Editar</button>
+                  <button onClick={() => removeResult(result.id)} className="rounded-md border border-red-200 px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-50 cursor-pointer">Eliminar</button>
                 </td>
               </tr>
             ))}
