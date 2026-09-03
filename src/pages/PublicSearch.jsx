@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createOrderPdfBlobUrl, downloadOrderPdf } from '../utils/pdfGenerator.js'
 import { getLatestPublishedOrderByDni } from '../services/labResultsApi.js'
-import { formatPeruDate, formatPeruDateTime } from '../utils/dateFormat.js'
+import { formatPeruDateTime } from '../utils/dateFormat.js'
 import { FileText, MonitorSmartphone, ClipboardList } from 'lucide-react'
 
 
