@@ -93,7 +93,7 @@ describe('AdminAnalysisDetail', () => {
     })
     expect(screen.getByText(/juan perez/i)).toBeInTheDocument()
     expect(screen.getByText(/12345678/)).toBeInTheDocument()
-    expect(screen.getByText('Hemoglobina')).toBeInTheDocument()
+    expect(screen.getByRole('cell', {name: 'Hemoglobina'})).toBeInTheDocument()
     expect(screen.getByText('14')).toBeInTheDocument()
   })
 
@@ -188,7 +188,7 @@ describe('AdminAnalysisDetail', () => {
     renderComponent()
     await waitFor(() => screen.getByText('Hemograma'))
 
-    const row = screen.getByText('Hemoglobina').closest('tr')
+    const row = screen.getByRole('cell', {name: 'Hemoglobina'}).closest('tr')
     const user = userEvent.setup()
     await user.click(within(row).getByRole('button', { name: /^eliminar$/i }))
 
@@ -204,7 +204,7 @@ describe('AdminAnalysisDetail', () => {
     renderComponent()
     await waitFor(() => screen.getByText('Hemograma'))
 
-    const row = screen.getByText('Hemoglobina').closest('tr')
+    const row = screen.getByRole('cell', {name: 'Hemoglobina'}).closest('tr')
     const user = userEvent.setup()
     await user.click(within(row).getByRole('button', { name: /^eliminar$/i }))
 
