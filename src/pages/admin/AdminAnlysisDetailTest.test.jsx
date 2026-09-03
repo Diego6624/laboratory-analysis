@@ -12,7 +12,7 @@ import {
 } from '../../services/labResultsApi.js'
 
 // Mock the API module entirely — keeps tests independent of Supabase/network.
-vi.mock('../../../services/labResultsApi.js', () => ({
+vi.mock('../../services/labResultsApi.js', () => ({
   getAnalysisById: vi.fn(),
   createResult: vi.fn(),
   updateResult: vi.fn(),
@@ -22,7 +22,7 @@ vi.mock('../../../services/labResultsApi.js', () => ({
 }))
 
 // Mock the config so parameter suggestion buttons are predictable.
-vi.mock('../../../config/labOptions.js', () => ({
+vi.mock('../../config/labOptions.js', () => ({
   ANALYSIS_PARAMETERS: {
     'Hemograma': ['Hemoglobina', 'Leucocitos'],
   },
