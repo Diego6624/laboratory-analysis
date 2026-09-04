@@ -153,7 +153,7 @@ export default function AdminOrders() {
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-11 w-full rounded-md border border-slate-300 px-3" required />
           </Field>
           <div className="hidden md:flex items-end">
-            <button className="h-11 w-full rounded-md bg-[#353182] px-5 text-sm font-semibold text-white cursor-pointer">Crear orden</button>
+            <button className="h-11 w-full rounded-sm bg-[#353182] px-5 text-sm font-semibold text-white cursor-pointer">Crear orden</button>
           </div>
         </div>
 
