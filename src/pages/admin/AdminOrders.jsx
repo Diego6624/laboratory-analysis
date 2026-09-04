@@ -17,7 +17,7 @@ const emptyOrderMeta = {
 function Field({ label, children, className = '' }) {
   return (
     <label className={`block ${className}`}>
-      <span className="text-sm font-semibold text-slate-700">{label}</span>
+      <span className="text-sm font-semibold text-slate-500">{label}</span>
       <div className="mt-2">{children}</div>
     </label>
   )
