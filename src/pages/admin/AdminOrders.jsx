@@ -159,31 +159,30 @@ export default function AdminOrders() {
 
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           <Field label="HC N°">
-            <input value={orderMeta.hc_numero} onChange={(e) => setOrderMeta({ ...orderMeta, hc_numero: e.target.value })} className="h-11 w-full rounded-md border border-slate-300 px-3" />
+            <input value={orderMeta.hc_numero} onChange={(e) => setOrderMeta({ ...orderMeta, hc_numero: e.target.value })} placeholder='HC-0001' className="h-11 w-full rounded-md border border-slate-300 px-3" />
           </Field>
           <Field label="Médico solicitante">
-            <input value={orderMeta.medico_solicitante} onChange={(e) => setOrderMeta({ ...orderMeta, medico_solicitante: e.target.value })} className="h-11 w-full rounded-md border border-slate-300 px-3" />
+            <input value={orderMeta.medico_solicitante} onChange={(e) => setOrderMeta({ ...orderMeta, medico_solicitante: e.target.value })} placeholder='Dr. Juan Pérez' className="h-11 w-full rounded-md border border-slate-300 px-3" />
           </Field>
           <Field label="Tipo de atención">
-            <input value={orderMeta.tipo_atencion} onChange={(e) => setOrderMeta({ ...orderMeta, tipo_atencion: e.target.value })} className="h-11 w-full rounded-md border border-slate-300 px-3" />
+            <input value={orderMeta.tipo_atencion} onChange={(e) => setOrderMeta({ ...orderMeta, tipo_atencion: e.target.value })} placeholder='SIS' className="h-11 w-full rounded-md border border-slate-300 px-3" />
           </Field>
           <Field label="N° de orden">
-            <input value={orderMeta.numero_orden} onChange={(e) => setOrderMeta({ ...orderMeta, numero_orden: e.target.value })} className="h-11 w-full rounded-md border border-slate-300 px-3" />
+            <input value={orderMeta.numero_orden} onChange={(e) => setOrderMeta({ ...orderMeta, numero_orden: e.target.value })} placeholder='ORD-2025-001' className="h-11 w-full rounded-md border border-slate-300 px-3" />
           </Field>
           <Field label="Fecha de muestra">
             <input type="date" value={orderMeta.fecha_muestra} onChange={(e) => setOrderMeta({ ...orderMeta, fecha_muestra: e.target.value })} className="h-11 w-full rounded-md border border-slate-300 px-3" />
           </Field>
           <Field label="Tipo de muestra">
-            <input value={orderMeta.tipo_muestra} onChange={(e) => setOrderMeta({ ...orderMeta, tipo_muestra: e.target.value })} className="h-11 w-full rounded-md border border-slate-300 px-3" />
+            <input value={orderMeta.tipo_muestra} onChange={(e) => setOrderMeta({ ...orderMeta, tipo_muestra: e.target.value })} placeholder='TP / INR' className="h-11 w-full rounded-md border border-slate-300 px-3" />
           </Field>
           <Field label="Observaciones generales" className="md:col-span-3">
-            <textarea value={orderMeta.observaciones} onChange={(e) => setOrderMeta({ ...orderMeta, observaciones: e.target.value })} className="w-full rounded-md border border-slate-300 px-3 py-3" rows={3} />
+            <textarea value={orderMeta.observaciones} onChange={(e) => setOrderMeta({ ...orderMeta, observaciones: e.target.value })} placeholder='Paciente en ayunas' className="w-full rounded-md border border-slate-300 px-3 py-3" rows={3} />
           </Field>
           <div className="md:hidden flex items-end">
             <button className="h-11 w-full rounded-md bg-[#353182] px-5 text-sm font-semibold text-white cursor-pointer">Crear orden</button>
           </div>
         </div>
-        {selectedPatient ? <p className="mt-3 text-sm text-slate-600">Paciente seleccionado: {selectedPatient.nombre}</p> : null}
       </form>
 
       <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
