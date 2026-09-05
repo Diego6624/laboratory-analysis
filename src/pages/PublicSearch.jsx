@@ -97,7 +97,7 @@ function OrderPreview({ orden }) {
         <div className="flex items-center gap-2 border-b border-slate-200 bg-slate-50 px-5 py-3">
           <div className="h-3 w-3 rounded-full bg-red-400" />
           <div className="h-3 w-3 rounded-full bg-yellow-400" />
-          <div className="h-3 w-3 rounded-full bg-green-400" />
+          <div className="h-3 w-3 rounded-full bg-green-200" />
           <span className="ml-2 text-xs text-slate-400 font-medium">Vista previa del documento</span>
         </div>
         <div className="h-[560px] bg-slate-100">
